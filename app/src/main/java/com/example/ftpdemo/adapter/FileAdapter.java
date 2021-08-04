@@ -22,6 +22,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> 
     private Context mContext;
     private List<FileBean> data = new ArrayList<>();
 
+    OnFileClickListener listener;
+
     public FileAdapter(Context context, List<FileBean> data) {
         mContext = context;
         if (data != null) {
@@ -57,6 +59,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> 
         return data.size();
     }
 
+    public void setFileClickListener(OnFileClickListener fileListener) {
+        listener = fileListener;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView img_file;
         TextView tv_filename;
@@ -64,6 +70,19 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> 
             super(itemView);
             img_file = itemView.findViewById(R.id.img_file);
             tv_filename = itemView.findViewById(R.id.tv_filename);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FileBean bean = data.get(getAdapterPosition());
+                    if (listener != null) {
+                        listener.onFileClickListener(bean);
+                    }
+                }
+            });
         }
+    }
+
+    public interface OnFileClickListener {
+        void onFileClickListener(FileBean bean);
     }
 }

@@ -2,8 +2,15 @@ package com.example.ftpdemo.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+
+import com.example.ftpdemo.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class Util {
 
@@ -23,5 +30,15 @@ public class Util {
             }
         }
         return result;
+    }
+
+    public static void showInputFTPDialog(Context context){
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.dialog_for_input_ftp_params, null
+        );
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

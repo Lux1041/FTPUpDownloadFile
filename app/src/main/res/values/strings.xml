@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">FTPDemo</string>
+
+    <string name="dialog_ftp_title">新建FTP服务器</string>
+    <string name="dialog_ftp_ip_title">服务器</string>
+    <string name="dilaog_ftp_server_port_title">端口</string>
+    <string name="dialog_ftp_server_name_title">用户名</string>
+    <string name="dialog_ftp_server_pass_title">密码</string>
+    <string name="dialog_ftp_server_hint_ip">FTP主服务器ip</string>
+    
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
 </resources>

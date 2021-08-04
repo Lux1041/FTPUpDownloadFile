@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_ftp_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_ftp_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:layout_marginStart="15dp"/>
+
+    <TextView
+        android:id="@+id/tv_ftp_ip_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/tv_ftp_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ftp_title"
+        android:text="@string/dialog_ftp_ip_title"
+        android:textSize="16sp"
+        android:layout_marginTop="15dp"/>
+
+    <EditText
+        android:id="@+id/et_input_ip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/barrier1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_ftp_ip_title"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_ftp_ip_title"
+        android:layout_marginEnd="15dp"
+        android:textSize="16sp"
+        android:layout_marginStart="5dp"
+        android:hint="@string/dialog_ftp_server_hint_ip"/>
+
+    <TextView
+        android:id="@+id/tv_ftp_port_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/tv_ftp_ip_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ftp_ip_title"
+        android:layout_marginTop="15dp"
+        android:textSize="16sp"
+        android:text="@string/dilaog_ftp_server_port_title"/>
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/et_input_ip"
+        app:layout_constraintEnd_toEndOf="@+id/et_input_ip"
+        app:layout_constraintTop_toTopOf="@+id/tv_ftp_port_title"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_ftp_port_title"
+        android:text="21"
+        android:textSize="16sp"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="tv_ftp_ip_title,
+        tv_ftp_port_title, tv_ftp_user_name, tv_ftp_user_pass"/>
+
+    <TextView
+        android:id="@+id/tv_ftp_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/dialog_ftp_server_name_title"
+        app:layout_constraintStart_toStartOf="@id/tv_ftp_port_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ftp_port_title"
+        android:layout_marginTop="15dp"/>
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/et_input_ip"
+        app:layout_constraintEnd_toEndOf="@+id/et_input_ip"
+        app:layout_constraintTop_toTopOf="@id/tv_ftp_user_name"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_ftp_user_name"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tv_ftp_user_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_ftp_server_pass_title"
+        app:layout_constraintStart_toStartOf="@+id/tv_ftp_user_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ftp_user_name"
+        android:textSize="16sp"
+        android:layout_marginTop="15dp"/>
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/et_input_ip"
+        app:layout_constraintEnd_toEndOf="@+id/et_input_ip"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@+id/tv_ftp_user_pass"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_ftp_user_pass"/>
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        app:layout_constraintTop_toTopOf="@+id/tv_confirm"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_confirm"
+        app:layout_constraintEnd_toStartOf="@+id/tv_confirm"
+        android:textSize="16sp"
+        android:layout_marginEnd="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ftp_user_pass"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

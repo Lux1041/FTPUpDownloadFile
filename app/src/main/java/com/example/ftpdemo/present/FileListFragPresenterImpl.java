@@ -1,5 +1,6 @@
 package com.example.ftpdemo.present;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.ftpdemo.bean.FileBean;
@@ -33,22 +34,32 @@ public class FileListFragPresenterImpl implements BasePresenter {
     public void refreshData() {
         if (baseMoudle != null) {
             List<FileBean> data = baseMoudle.getFileList();
-            List<String> pathData = new ArrayList<>();
-            if (data != null && data.size() > 0) {
-                String pathStr = data.get(0).getPath();
-                String[] paths = pathStr.split("\\/");
-                Log.i(getClass().getSimpleName(), "path = " + pathStr);
-                for (int i = 1 ; i < paths.length - 1; i ++) {
-                    pathData.add(paths[i]);
-                }
-                mView.refreshPathData(pathData);
-            }
             mView.refreshData(data);
+            List<String> pathData = baseMoudle.getfilePathData();
+            mView.refreshPathData(pathData);
         }
     }
 
+//    private void dealFileList(List<FileBean> data) {
+//        List<String> pathData = new ArrayList<>();
+//        if (data != null && data.size() > 0) {
+//            String pathStr = data.get(0).getPath();
+//            String[] paths = pathStr.split("\\/");
+//            Log.i(getClass().getSimpleName(), "path = " + pathStr);
+//            for (int i = 0 ; i < paths.length - 1; i ++) {
+//                String content = paths[i];
+//                if (TextUtils.isEmpty(content)) {
+//                    content = "/";
+//                }
+//                pathData.add(content);
+//            }
+//            mView.refreshPathData(pathData);
+//        }
+//        mView.refreshData(data);
+//    }
+
     @Override
     public void queryPathFiles(String path) {
-
+        mView.refreshData(baseMoudle.getFileByPath(path));
     }
 }

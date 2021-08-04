@@ -8,6 +8,17 @@ public class FileBean implements Comparable<FileBean>{
     private String path;
     private boolean isDir;
 
+    //添加ftp，默认false不添加
+    private boolean addFtp = false;
+
+    public boolean isAddFtp() {
+        return addFtp;
+    }
+
+    public void setAddFtp(boolean addFtp) {
+        this.addFtp = addFtp;
+    }
+
     public boolean isDir() {
         return isDir;
     }
