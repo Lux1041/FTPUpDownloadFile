@@ -6,9 +6,13 @@ import java.util.List;
 
 public abstract class BaseMoudle {
 
-    public abstract List<FileBean> getFileList();
+    public abstract void getFileList(GetFileListCallback callback);
 
-    public abstract List<FileBean> getFileByPath(String path);
+    public abstract void getFileByPath(FileBean bean, GetFileListCallback callback);
 
     public abstract List<String> getfilePathData();
+
+    public interface GetFileListCallback{
+        void onCallback(List<FileBean> data);
+    }
 }

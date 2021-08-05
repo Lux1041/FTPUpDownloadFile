@@ -17,10 +17,14 @@ public class FileBean implements Comparable<FileBean>{
     public FileBean() {
     }
 
+    public FileBean(String path) {
+        this.path = path;
+    }
+
     public FileBean(FTPBean ftpBean) {
         this.ftpBean = ftpBean;
         isDir = true;
-        path = Constant.REMOTE_FILE_ROOT_PATH + ftpBean.getIp();
+        path = Constant.REMOTE_FILE_ROOT_PATH;
         fileName = ftpBean.getName() + "@" + ftpBean.getIp();
     }
 

@@ -1,5 +1,6 @@
 package com.example.ftpdemo.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,7 @@ import com.example.ftpdemo.bean.FileBean;
 import com.example.ftpdemo.present.BasePresenter;
 import com.example.ftpdemo.present.FileListFragPresenterImpl;
 import com.example.ftpdemo.util.Constant;
+import com.example.ftpdemo.util.SPUtil;
 import com.example.ftpdemo.util.Util;
 import com.example.ftpdemo.view.BaseView;
 
@@ -54,11 +57,14 @@ public class FileListFragment extends Fragment implements BaseView {
 
     private List<String> filePaths = new ArrayList<>();
 
+    ProgressBar progress_bar;
+
     Util.OnDialogConfirmClickListener onDialogConfirmClickListener = new Util.OnDialogConfirmClickListener() {
         @Override
         public void onDialogConfirmClickListener(FTPBean ftpBean) {
             FileBean bean = new FileBean(ftpBean);
             fileBeans.add(0, bean);
+            SPUtil.getInstance(null).setFTPParams(fileBeans);
             fileAdapter.notifyDataSetChanged();
         }
     };
@@ -68,17 +74,20 @@ public class FileListFragment extends Fragment implements BaseView {
         public void onFileClickListener(FileBean bean) {
             if (bean.isDir()) {
                 if (bean.isAddFtp()) {
-                    // TODO: 2021/8/4 添加ftp地址
+                    //2021/8/4 添加ftp地址
                     Util.showInputFTPDialog(getActivity(), onDialogConfirmClickListener);
                 } else {
                     //刷新地址
-                    refreshPath(bean.getPath());
+                    showLoading();
+                    if (currentType == Constant.LOCAL_DATA_SOURCE_TYPE) {
+                        refreshPath(bean.getPath());
+                    }
                     file_path.scrollToPosition(filePaths.size() - 1);
-                    mPresenter.queryPathFiles(bean.getPath());
+                    mPresenter.queryPathFiles(bean);
                 }
             } else {
                 // TODO: 2021/8/4 选择文件上传/下载操作
-
+                mPresenter.dealFile(bean);
             }
         }
     };
@@ -86,8 +95,9 @@ public class FileListFragment extends Fragment implements BaseView {
     FilePathAdapter.OnFilePathClickListener filePathClickListener = new FilePathAdapter.OnFilePathClickListener() {
         @Override
         public void onFilePathClickListener(String path) {
+            showLoading();
             refreshPath(path);
-            mPresenter.queryPathFiles(path);
+            mPresenter.queryPathFiles(new FileBean(path));
         }
     };
 
@@ -105,6 +115,7 @@ public class FileListFragment extends Fragment implements BaseView {
         if (getArguments() != null) {
             currentType = getArguments().getInt(DATA_SOURCE_TYPE);
         }
+        SPUtil.getInstance(getActivity().getApplicationContext());
     }
 
     @Nullable
@@ -115,6 +126,7 @@ public class FileListFragment extends Fragment implements BaseView {
         View rootView = inflater.inflate(R.layout.fragment_file_list, container, false);
         file_path = rootView.findViewById(R.id.file_path);
         file_list = rootView.findViewById(R.id.file_list);
+        progress_bar = rootView.findViewById(R.id.progress_bar);
 
         mPresenter = new FileListFragPresenterImpl(this, currentType);
 
@@ -133,19 +145,15 @@ public class FileListFragment extends Fragment implements BaseView {
         file_list.setAdapter(fileAdapter);
         fileAdapter.setFileClickListener(fileClickListener);
 
+        showLoading();
         mPresenter.refreshData();
 
         return rootView;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.refreshData();
-    }
-
-    @Override
     public void refreshData(List<FileBean> data) {
+        dismissLoading();
         fileBeans.clear();
         if (data != null) {
             fileBeans.addAll(data);
@@ -173,5 +181,17 @@ public class FileListFragment extends Fragment implements BaseView {
             tempPath.add(path);
         }
         refreshPathData(tempPath);
+    }
+
+    private synchronized void showLoading() {
+        if (progress_bar.getVisibility() == View.GONE) {
+            progress_bar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private synchronized void dismissLoading() {
+        if (progress_bar.getVisibility() == View.VISIBLE) {
+            progress_bar.setVisibility(View.GONE);
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.ftpdemo.bean.FileBean;
+import com.example.ftpdemo.util.MyLocalFileAsyncTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,35 +15,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class LocalMoudle extends BaseMoudle {
     @Override
-    public List<FileBean> getFileList() {
+    public void getFileList(GetFileListCallback callback) {
         //本地数据查询
         String path = Environment.getExternalStorageDirectory().getPath();
-        return getFileByPath(path);
+        getFileByPath(new FileBean(path), callback);
     }
 
     @Override
-    public List<FileBean> getFileByPath(String path) {
-        Log.i(getClass().getSimpleName(), "begin time = " + System.currentTimeMillis());
-        List<FileBean> fileBeans = new ArrayList<>();
-        File root = new File(path);
-        File[] files = root.listFiles();
-        if (null == files) {
-            return fileBeans;
-        }
-        for (File file : files) {
-            String name = file.getName();
-            if (name.startsWith(".")) {//隐藏文件暂不显示
-                continue;
-            }
-            FileBean bean = new FileBean();
-            bean.setDir(file.isDirectory());
-            bean.setFileName(file.getName());
-            bean.setPath(file.getPath());
-            fileBeans.add(bean);
-        }
-        Log.i(getClass().getSimpleName(), "end time = " + System.currentTimeMillis());
-        Collections.sort(fileBeans);
-        return fileBeans;
+    public synchronized void getFileByPath(FileBean fileBean, GetFileListCallback callback) {
+        MyLocalFileAsyncTask task = new MyLocalFileAsyncTask(callback);
+        task.execute(fileBean);
     }
 
     @Override
