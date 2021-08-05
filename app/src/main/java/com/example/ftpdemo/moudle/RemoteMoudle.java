@@ -1,6 +1,7 @@
 package com.example.ftpdemo.moudle;
 
 import com.example.ftpdemo.bean.FileBean;
+import com.example.ftpdemo.util.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +14,14 @@ public class RemoteMoudle extends BaseMoudle {
         bean.setAddFtp(true);
         bean.setDir(true);
         bean.setFileName("添加ftp地址");
-        bean.setPath("FTP/0");
+        bean.setPath(Constant.REMOTE_FILE_ROOT_PATH);
         data.add(bean);
         return data;
     }
 
     @Override
     public List<FileBean> getFileByPath(String path) {
+
         return null;
     }
 

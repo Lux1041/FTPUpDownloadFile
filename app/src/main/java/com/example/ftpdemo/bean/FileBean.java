@@ -3,6 +3,8 @@ package com.example.ftpdemo.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.ftpdemo.util.Constant;
+
 public class FileBean implements Comparable<FileBean>{
     private String fileName;
     private String path;
@@ -10,6 +12,25 @@ public class FileBean implements Comparable<FileBean>{
 
     //添加ftp，默认false不添加
     private boolean addFtp = false;
+    private FTPBean ftpBean;
+
+    public FileBean() {
+    }
+
+    public FileBean(FTPBean ftpBean) {
+        this.ftpBean = ftpBean;
+        isDir = true;
+        path = Constant.REMOTE_FILE_ROOT_PATH + ftpBean.getIp();
+        fileName = ftpBean.getName() + "@" + ftpBean.getIp();
+    }
+
+    public FTPBean getFtpBean() {
+        return ftpBean;
+    }
+
+    public void setFtpBean(FTPBean ftpBean) {
+        this.ftpBean = ftpBean;
+    }
 
     public boolean isAddFtp() {
         return addFtp;

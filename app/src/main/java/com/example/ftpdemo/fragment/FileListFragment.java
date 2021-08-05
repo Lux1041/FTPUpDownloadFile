@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ftpdemo.R;
 import com.example.ftpdemo.adapter.FileAdapter;
 import com.example.ftpdemo.adapter.FilePathAdapter;
+import com.example.ftpdemo.bean.FTPBean;
 import com.example.ftpdemo.bean.FileBean;
 import com.example.ftpdemo.present.BasePresenter;
 import com.example.ftpdemo.present.FileListFragPresenterImpl;
@@ -53,13 +54,22 @@ public class FileListFragment extends Fragment implements BaseView {
 
     private List<String> filePaths = new ArrayList<>();
 
+    Util.OnDialogConfirmClickListener onDialogConfirmClickListener = new Util.OnDialogConfirmClickListener() {
+        @Override
+        public void onDialogConfirmClickListener(FTPBean ftpBean) {
+            FileBean bean = new FileBean(ftpBean);
+            fileBeans.add(0, bean);
+            fileAdapter.notifyDataSetChanged();
+        }
+    };
+
     FileAdapter.OnFileClickListener fileClickListener = new FileAdapter.OnFileClickListener() {
         @Override
         public void onFileClickListener(FileBean bean) {
             if (bean.isDir()) {
                 if (bean.isAddFtp()) {
                     // TODO: 2021/8/4 添加ftp地址
-                    Util.showInputFTPDialog(getActivity());
+                    Util.showInputFTPDialog(getActivity(), onDialogConfirmClickListener);
                 } else {
                     //刷新地址
                     refreshPath(bean.getPath());

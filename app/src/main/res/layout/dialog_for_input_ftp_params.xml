@@ -50,6 +50,7 @@
         android:text="@string/dilaog_ftp_server_port_title"/>
 
     <EditText
+        android:id="@+id/et_input_port"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/et_input_ip"
@@ -78,6 +79,7 @@
         android:layout_marginTop="15dp"/>
 
     <EditText
+        android:id="@+id/et_input_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/et_input_ip"
@@ -97,37 +99,16 @@
         android:layout_marginTop="15dp"/>
 
     <EditText
+        android:id="@+id/et_input_pass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/et_input_ip"
         app:layout_constraintEnd_toEndOf="@+id/et_input_ip"
         android:textSize="16sp"
+        android:inputType="textPassword"
         app:layout_constraintTop_toTopOf="@+id/tv_ftp_user_pass"
         app:layout_constraintBottom_toBottomOf="@+id/tv_ftp_user_pass"/>
 
-    <TextView
-        android:id="@+id/tv_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        app:layout_constraintTop_toTopOf="@+id/tv_confirm"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_confirm"
-        app:layout_constraintEnd_toStartOf="@+id/tv_confirm"
-        android:textSize="16sp"
-        android:layout_marginEnd="20dp"/>
-
-    <TextView
-        android:id="@+id/tv_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ftp_user_pass"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:textSize="16sp"
-        android:layout_marginBottom="20dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
