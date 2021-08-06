@@ -1,6 +1,5 @@
-package com.example.ftpdemo.util;
+package com.example.ftpdemo.util.task;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.ftpdemo.bean.FileBean;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MyLocalFileAsyncTask extends BaseFileAsyncTask {
+public class MyLocalFileAsyncTask extends BaseReadFileAsyncTask {
 
     public MyLocalFileAsyncTask(BaseMoudle.GetFileListCallback callback) {
         super(callback);

@@ -1,14 +1,12 @@
 package com.example.ftpdemo.fragment;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,11 +24,12 @@ import com.example.ftpdemo.bean.FileBean;
 import com.example.ftpdemo.present.BasePresenter;
 import com.example.ftpdemo.present.FileListFragPresenterImpl;
 import com.example.ftpdemo.util.Constant;
+import com.example.ftpdemo.util.observer.ObserCallback;
+import com.example.ftpdemo.util.observer.ObserverManager;
 import com.example.ftpdemo.util.SPUtil;
 import com.example.ftpdemo.util.Util;
 import com.example.ftpdemo.view.BaseView;
 
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +58,8 @@ public class FileListFragment extends Fragment implements BaseView {
 
     ProgressBar progress_bar;
 
-    Util.OnDialogConfirmClickListener onDialogConfirmClickListener = new Util.OnDialogConfirmClickListener() {
+    Util.OnDialogConfirmClickListener onDialogConfirmClickListener =
+            new Util.OnDialogConfirmClickListener() {
         @Override
         public void onDialogConfirmClickListener(FTPBean ftpBean) {
             FileBean bean = new FileBean(ftpBean);
@@ -69,7 +69,8 @@ public class FileListFragment extends Fragment implements BaseView {
         }
     };
 
-    FileAdapter.OnFileClickListener fileClickListener = new FileAdapter.OnFileClickListener() {
+    FileAdapter.OnFileClickListener fileClickListener =
+            new FileAdapter.OnFileClickListener() {
         @Override
         public void onFileClickListener(FileBean bean) {
             if (bean.isDir()) {
@@ -86,18 +87,61 @@ public class FileListFragment extends Fragment implements BaseView {
                     mPresenter.queryPathFiles(bean);
                 }
             } else {
-                // TODO: 2021/8/4 选择文件上传/下载操作
-                mPresenter.dealFile(bean);
+                // 2021/8/4 选择文件上传/下载操作
+                if (currentType == Constant.LOCAL_DATA_SOURCE_TYPE) {
+                    //选择ftp服务端
+                    String ftpDataStr = SPUtil.getInstance(null).getFTPParams();
+                    if (TextUtils.isEmpty(ftpDataStr)) {
+                        Util.showInputFTPDialog(
+                                getActivity(),
+                                new Util.OnDialogConfirmClickListener() {
+                            @Override
+                            public void onDialogConfirmClickListener(FTPBean ftpBean) {
+                                List<FileBean> tempBeans = new ArrayList<>();
+                                FileBean newBean = new FileBean(ftpBean);
+                                tempBeans.add(newBean);
+                                SPUtil.getInstance(null).setFTPParams(tempBeans);
+                                bean.setFtpBean(ftpBean);
+                                showLoading();
+                                mPresenter.dealFile(bean);
+                            }
+                        });
+                    } else {
+                        Util.chooseFTPServiceDialog(
+                                getActivity(),
+                                new Util.OnDialogConfirmClickListener() {
+                            @Override
+                            public void onDialogConfirmClickListener(FTPBean ftpBean) {
+                                if (ftpBean != null) {
+                                    showLoading();
+                                    bean.setFtpBean(ftpBean);
+                                    mPresenter.dealFile(bean);
+                                }
+                            }
+                        });
+                    }
+                } else if (currentType == Constant.REMOTE_DATA_SOURCE_TYPE) {
+                    showLoading();
+                    mPresenter.dealFile(bean);
+                }
             }
         }
     };
 
-    FilePathAdapter.OnFilePathClickListener filePathClickListener = new FilePathAdapter.OnFilePathClickListener() {
+    FilePathAdapter.OnFilePathClickListener filePathClickListener =
+            new FilePathAdapter.OnFilePathClickListener() {
         @Override
         public void onFilePathClickListener(String path) {
             showLoading();
             refreshPath(path);
             mPresenter.queryPathFiles(new FileBean(path));
+        }
+    };
+
+    ObserCallback obserCallback = new ObserCallback() {
+        @Override
+        public void onReceiver(Object msg) {
+            mPresenter.refreshData();
         }
     };
 
@@ -116,6 +160,8 @@ public class FileListFragment extends Fragment implements BaseView {
             currentType = getArguments().getInt(DATA_SOURCE_TYPE);
         }
         SPUtil.getInstance(getActivity().getApplicationContext());
+        mPresenter = new FileListFragPresenterImpl(this, currentType);
+        ObserverManager.registerObserver(Constant.PERMISSION_GET_STATUS, obserCallback);
     }
 
     @Nullable
@@ -123,12 +169,14 @@ public class FileListFragment extends Fragment implements BaseView {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_file_list, container, false);
+        View rootView = inflater.inflate(
+                R.layout.fragment_file_list,
+                container,
+                false
+        );
         file_path = rootView.findViewById(R.id.file_path);
         file_list = rootView.findViewById(R.id.file_list);
         progress_bar = rootView.findViewById(R.id.progress_bar);
-
-        mPresenter = new FileListFragPresenterImpl(this, currentType);
 
         LinearLayoutManager horizontalManager = new LinearLayoutManager(getActivity());
         horizontalManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -168,6 +216,20 @@ public class FileListFragment extends Fragment implements BaseView {
             filePaths.addAll(pathData);
             pathAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void uploadResult(boolean result) {
+        dismissLoading();
+        String content = (currentType == Constant.LOCAL_DATA_SOURCE_TYPE ? "上传" : "下载")
+                + (result ? "成功" : "失败");
+        Toast.makeText(getActivity(), content, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ObserverManager.unregisterObserver(Constant.PERMISSION_GET_STATUS, obserCallback);
     }
 
     private void refreshPath(String rootPath) {

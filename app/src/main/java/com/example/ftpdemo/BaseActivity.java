@@ -5,7 +5,9 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+
+import com.example.ftpdemo.util.Constant;
+import com.example.ftpdemo.util.observer.ObserverManager;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -22,6 +24,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+        boolean result = true;
+        for (int grant : grantResults) {
+            if (grant == PackageManager.PERMISSION_DENIED) {
+                result = false;
+            }
+        }
+        if (result) {
+            ObserverManager.sendMessage(Constant.PERMISSION_GET_STATUS, null);
+        }
     }
 }

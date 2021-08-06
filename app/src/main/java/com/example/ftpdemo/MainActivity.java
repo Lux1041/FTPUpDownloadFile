@@ -44,7 +44,11 @@ public class MainActivity extends BaseActivity {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(FileListFragment.newInstance(Constant.LOCAL_DATA_SOURCE_TYPE));
         fragments.add(FileListFragment.newInstance(Constant.REMOTE_DATA_SOURCE_TYPE));
-        MyFragmentsAdapter adapter = new MyFragmentsAdapter(getSupportFragmentManager(), fragments, titles);
+        MyFragmentsAdapter adapter = new MyFragmentsAdapter(
+                getSupportFragmentManager(),
+                fragments,
+                titles
+        );
         viewpager.setAdapter(adapter);
         tablayout.setupWithViewPager(viewpager);
     }

@@ -7,4 +7,6 @@ public class Constant {
     public static final String REMOTE_FILE_ROOT_PATH = "FTP/";
 
     public static final String FTP_SERVER_PARAMS_KEY = "FTP_SERVER_PARAMS_KEY";
+
+    public static final String PERMISSION_GET_STATUS = "PERMISSION_GET_STATUS";
 }

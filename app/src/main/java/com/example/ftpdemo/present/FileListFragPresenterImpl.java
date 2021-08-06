@@ -53,12 +53,14 @@ public class FileListFragPresenterImpl implements BasePresenter {
 
     @Override
     public void queryPathFiles(FileBean bean) {
-        if (Constant.REMOTE_FILE_ROOT_PATH.equals(bean.getPath()) && bean.getFtpBean() != null) {
+        if (Constant.REMOTE_FILE_ROOT_PATH.equals(bean.getPath()) &&
+                bean.getFtpBean() != null) {
             currentFTPBean = bean.getFtpBean();
         } else if (bean.getPath().startsWith(Constant.REMOTE_FILE_ROOT_PATH) &&
                 !Constant.REMOTE_FILE_ROOT_PATH.equals(bean.getPath())) {
             bean.setFtpBean(currentFTPBean);
-            String newPath = bean.getPath().replace(Constant.REMOTE_FILE_ROOT_PATH, "");
+            String newPath = bean.getPath()
+                    .replace(Constant.REMOTE_FILE_ROOT_PATH, "");
             newPath = newPath.replace(currentFTPBean.getIp(), "");
             if (TextUtils.isEmpty(newPath)) {
                 newPath = "/";
@@ -87,19 +89,13 @@ public class FileListFragPresenterImpl implements BasePresenter {
 
     @Override
     public void dealFile(FileBean bean) {
-        switch (currentType) {
-            case Constant.LOCAL_DATA_SOURCE_TYPE:
-                //文件上传
-
-                break;
-            case Constant.REMOTE_DATA_SOURCE_TYPE:
-                //文件下载
-
-                break;
-        }
+        baseMoudle.dealFile(bean, new BaseMoudle.OnLoadFileResultListener() {
+            @Override
+            public void onLoadFileResultListener(boolean result) {
+                mView.uploadResult(result);
+            }
+        });
     }
-
-
 
     /**
      * 路径解析

@@ -11,12 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ftpdemo.R;
+import com.example.ftpdemo.adapter.FilePathAdapter.MyFilePathViewHolder;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilePathAdapter extends RecyclerView.Adapter<FilePathAdapter.MyFilePathViewHolder> {
+public class FilePathAdapter extends RecyclerView.Adapter<MyFilePathViewHolder> {
 
     private Context mContext;
 
@@ -41,7 +42,7 @@ public class FilePathAdapter extends RecyclerView.Adapter<FilePathAdapter.MyFile
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FilePathAdapter.MyFilePathViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyFilePathViewHolder holder, int position) {
         holder.img_rightarrow.setVisibility(
                 position == (pathData.size() - 1) ? View.GONE : View.VISIBLE
         );

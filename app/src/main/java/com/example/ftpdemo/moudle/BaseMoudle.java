@@ -12,7 +12,14 @@ public abstract class BaseMoudle {
 
     public abstract List<String> getfilePathData();
 
+    public abstract void dealFile(FileBean bean, OnLoadFileResultListener callback);
+
+
     public interface GetFileListCallback{
         void onCallback(List<FileBean> data);
+    }
+
+    public interface OnLoadFileResultListener{
+        void onLoadFileResultListener(boolean result);
     }
 }

@@ -1,10 +1,11 @@
-package com.example.ftpdemo.util;
+package com.example.ftpdemo.util.task;
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.ftpdemo.bean.FileBean;
 import com.example.ftpdemo.moudle.BaseMoudle;
+import com.example.ftpdemo.util.Constant;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -14,7 +15,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyRemoteFileAsyncTask extends BaseFileAsyncTask {
+/**
+ * 读取远程文件列表
+ */
+public class MyRemoteFileAsyncTask extends BaseReadFileAsyncTask {
     public MyRemoteFileAsyncTask(BaseMoudle.GetFileListCallback callback) {
         super(callback);
     }
@@ -46,7 +50,9 @@ public class MyRemoteFileAsyncTask extends BaseFileAsyncTask {
                         if (File.separator.equals(bean.getPath())) {
                             workingdirectoryStr = bean.getPath() + bean.getFileName();
                         } else {
-                            workingdirectoryStr = bean.getPath() + File.separator + bean.getFileName();
+                            workingdirectoryStr = bean.getPath() +
+                                    File.separator +
+                                    bean.getFileName();
                         }
                     }
                     files = client.listFiles(workingdirectoryStr);
@@ -61,24 +67,11 @@ public class MyRemoteFileAsyncTask extends BaseFileAsyncTask {
                         fileBean.setDir(file.isDirectory());
                         fileBean.setFtpBean(bean.getFtpBean());
                         fileBeans.add(fileBean);
-                        Log.i("RemoteMoudle", "file params begin =======================");
-                        Log.i("RemoteMoudle", "file group = " + file.getGroup());
-                        Log.i("RemoteMoudle", "file link = " + file.getLink());
-                        Log.i("RemoteMoudle", "file name = " + file.getName());
-                        Log.i("RemoteMoudle", "file rawListing = " + file.getRawListing());
-                        Log.i("RemoteMoudle", "file user = " + file.getUser());
-                        Log.i("RemoteMoudle", "file hardlinkcount = " + file.getHardLinkCount());
-                        Log.i("RemoteMoudle", "file size = " + file.getSize());
-                        Log.i("RemoteMoudle", "file timestamp = " + file.getTimestamp());
-                        Log.i("RemoteMoudle", "file type = " + file.getType());
-                        Log.i("RemoteMoudle", "file isDir = " + file.isDirectory());
-                        Log.i("RemoteMoudle", "file toFormattedstring = " + file.toFormattedString());
-                        Log.i("RemoteMoudle", "file params  end  =======================");
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.i("RemoteMoudle", "get remote file list error");
         } finally {
             try {
                 if (client.isConnected()) {
@@ -88,7 +81,6 @@ public class MyRemoteFileAsyncTask extends BaseFileAsyncTask {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
         return fileBeans;
     }

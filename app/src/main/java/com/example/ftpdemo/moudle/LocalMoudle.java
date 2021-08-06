@@ -5,13 +5,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.ftpdemo.bean.FileBean;
-import com.example.ftpdemo.util.MyLocalFileAsyncTask;
+import com.example.ftpdemo.util.task.MyLocalFileAsyncTask;
+import com.example.ftpdemo.util.task.MyUploadFileTask;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class LocalMoudle extends BaseMoudle {
     @Override
@@ -41,5 +39,13 @@ public class LocalMoudle extends BaseMoudle {
             filePath.add(path);
         }
         return filePath;
+    }
+
+    @Override
+    public void dealFile(FileBean bean, OnLoadFileResultListener callback) {
+        //文件上传
+        Log.i(getClass().getSimpleName(), "upload file = " + bean.getPath());
+        MyUploadFileTask task = new MyUploadFileTask(callback);
+        task.execute(bean);
     }
 }
