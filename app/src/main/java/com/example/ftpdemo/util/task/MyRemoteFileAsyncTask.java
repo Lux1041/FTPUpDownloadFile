@@ -13,6 +13,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,6 +69,7 @@ public class MyRemoteFileAsyncTask extends BaseReadFileAsyncTask {
                         fileBean.setFtpBean(bean.getFtpBean());
                         fileBeans.add(fileBean);
                     }
+                    Collections.sort(fileBeans);
                 }
             }
         } catch (IOException e) {

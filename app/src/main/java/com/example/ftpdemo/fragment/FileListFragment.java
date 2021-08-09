@@ -24,6 +24,7 @@ import com.example.ftpdemo.bean.FileBean;
 import com.example.ftpdemo.present.BasePresenter;
 import com.example.ftpdemo.present.FileListFragPresenterImpl;
 import com.example.ftpdemo.util.Constant;
+import com.example.ftpdemo.util.NotificationUtil;
 import com.example.ftpdemo.util.observer.ObserCallback;
 import com.example.ftpdemo.util.observer.ObserverManager;
 import com.example.ftpdemo.util.SPUtil;
@@ -57,6 +58,14 @@ public class FileListFragment extends Fragment implements BaseView {
     private List<String> filePaths = new ArrayList<>();
 
     ProgressBar progress_bar;
+
+    public static Fragment newInstance(int type) {
+        FileListFragment fragment = new FileListFragment();
+        Bundle b = new Bundle();
+        b.putInt(DATA_SOURCE_TYPE, type);
+        fragment.setArguments(b);
+        return fragment;
+    }
 
     Util.OnDialogConfirmClickListener onDialogConfirmClickListener =
             new Util.OnDialogConfirmClickListener() {
@@ -145,14 +154,6 @@ public class FileListFragment extends Fragment implements BaseView {
         }
     };
 
-    public static Fragment newInstance(int type) {
-        FileListFragment fragment = new FileListFragment();
-        Bundle b = new Bundle();
-        b.putInt(DATA_SOURCE_TYPE, type);
-        fragment.setArguments(b);
-        return fragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,6 +161,7 @@ public class FileListFragment extends Fragment implements BaseView {
             currentType = getArguments().getInt(DATA_SOURCE_TYPE);
         }
         SPUtil.getInstance(getActivity().getApplicationContext());
+        NotificationUtil.getInstance(getActivity().getApplication());
         mPresenter = new FileListFragPresenterImpl(this, currentType);
         ObserverManager.registerObserver(Constant.PERMISSION_GET_STATUS, obserCallback);
     }
@@ -223,7 +225,9 @@ public class FileListFragment extends Fragment implements BaseView {
         dismissLoading();
         String content = (currentType == Constant.LOCAL_DATA_SOURCE_TYPE ? "上传" : "下载")
                 + (result ? "成功" : "失败");
-        Toast.makeText(getActivity(), content, Toast.LENGTH_LONG).show();
+        if (getActivity() != null) {
+            Toast.makeText(getActivity(), content, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -246,13 +250,13 @@ public class FileListFragment extends Fragment implements BaseView {
     }
 
     private synchronized void showLoading() {
-        if (progress_bar.getVisibility() == View.GONE) {
+        if (progress_bar != null && progress_bar.getVisibility() == View.GONE) {
             progress_bar.setVisibility(View.VISIBLE);
         }
     }
 
     private synchronized void dismissLoading() {
-        if (progress_bar.getVisibility() == View.VISIBLE) {
+        if (progress_bar != null && progress_bar.getVisibility() == View.VISIBLE) {
             progress_bar.setVisibility(View.GONE);
         }
     }

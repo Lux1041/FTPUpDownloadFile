@@ -9,4 +9,6 @@ public class Constant {
     public static final String FTP_SERVER_PARAMS_KEY = "FTP_SERVER_PARAMS_KEY";
 
     public static final String PERMISSION_GET_STATUS = "PERMISSION_GET_STATUS";
+
+    public static volatile int UPLOAD_AND_DOWNLOAD_FILE_ID = 1;
 }
