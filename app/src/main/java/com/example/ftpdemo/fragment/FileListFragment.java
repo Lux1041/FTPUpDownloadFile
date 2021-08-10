@@ -1,5 +1,6 @@
 package com.example.ftpdemo.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,11 +17,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ftpdemo.BaseActivity;
+import com.example.ftpdemo.MainActivity;
 import com.example.ftpdemo.R;
 import com.example.ftpdemo.adapter.FileAdapter;
 import com.example.ftpdemo.adapter.FilePathAdapter;
 import com.example.ftpdemo.bean.FTPBean;
 import com.example.ftpdemo.bean.FileBean;
+import com.example.ftpdemo.impl.ObserCallbackImpl;
 import com.example.ftpdemo.present.BasePresenter;
 import com.example.ftpdemo.present.FileListFragPresenterImpl;
 import com.example.ftpdemo.util.Constant;
@@ -58,6 +62,8 @@ public class FileListFragment extends Fragment implements BaseView {
     private List<String> filePaths = new ArrayList<>();
 
     ProgressBar progress_bar;
+
+    ObserCallback obserCallback;
 
     public static Fragment newInstance(int type) {
         FileListFragment fragment = new FileListFragment();
@@ -130,8 +136,16 @@ public class FileListFragment extends Fragment implements BaseView {
                         });
                     }
                 } else if (currentType == Constant.REMOTE_DATA_SOURCE_TYPE) {
-                    showLoading();
-                    mPresenter.dealFile(bean);
+                    if (Util.checkPermission(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+                        showLoading();
+                        mPresenter.dealFile(bean);
+                    } else {
+                        if (getActivity() instanceof MainActivity) {
+                            ((MainActivity) getActivity()).requestPermissions(
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                                    );
+                        }
+                    }
                 }
             }
         }
@@ -147,13 +161,6 @@ public class FileListFragment extends Fragment implements BaseView {
         }
     };
 
-    ObserCallback obserCallback = new ObserCallback() {
-        @Override
-        public void onReceiver(Object msg) {
-            mPresenter.refreshData();
-        }
-    };
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +170,7 @@ public class FileListFragment extends Fragment implements BaseView {
         SPUtil.getInstance(getActivity().getApplicationContext());
         NotificationUtil.getInstance(getActivity().getApplication());
         mPresenter = new FileListFragPresenterImpl(this, currentType);
+        obserCallback = new ObserCallbackImpl(mPresenter);
         ObserverManager.registerObserver(Constant.PERMISSION_GET_STATUS, obserCallback);
     }
 

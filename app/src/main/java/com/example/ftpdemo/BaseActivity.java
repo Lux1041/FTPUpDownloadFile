@@ -13,7 +13,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION_CODE = 1000;
 
-    protected void requestPermissions(String[] permissions) {
+    public void requestPermissions(String[] permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, REQUEST_PERMISSION_CODE);
         }
